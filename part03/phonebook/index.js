@@ -1,5 +1,17 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
+
+app.use(express.json()) // IMPORTANTE PARA QUE EL req.body FUNCIONE
+
+morgan.token('body', (req) => JSON.stringify(req.body))
+const tiny = ':method :url :status :res[content-length] - :response-time ms'
+app.use(morgan(`${tiny} :body`, {
+  skip: function (req, res) { return req.method !== 'POST' }
+}))
+app.use(morgan('tiny', {
+  skip: function (req, res) { return req.method === 'POST' }
+}))
 
 let persons = [
   {
@@ -23,6 +35,7 @@ let persons = [
     number: '39-23-6423122'
   }
 ]
+
 // GETTERS
 app.get('', (req, res) => { res.send('<h1>Info on "/api/persons"</h1>') })
 app.get('/api/persons', (req, res) => { res.json(persons) })
@@ -57,7 +70,7 @@ const genId = () => {
   const id = Math.ceil(Math.random() * (persons.length + 1) * 2)
   return id
 }
-app.use(express.json()) // IMPORTANTE PARA QUE EL req.body FUNCIONE
+
 app.post('/api/persons', (req, res) => {
   const body = req.body
   if (!body.name || !body.number) {

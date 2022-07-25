@@ -15,7 +15,8 @@
     "standard": "17.0.0"
   },
   "dependencies": {
-    "express": "4.18.1"
+    "express": "4.18.1",
+    "morgan": "^1.10.0"
   },
   "eslintConfig": {
     "extends": "./node_modules/standard/eslintrc.json"
